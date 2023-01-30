@@ -42,7 +42,6 @@ const concatAudio = (buffers: AudioBuffer[]): AudioBuffer => {
         }
         currentOffset += buffer.length;
     });
-
     return combinedAudio
 }
 
@@ -52,7 +51,6 @@ const play = () => {
     audioSource.value = audioContext.value.createBufferSource()
     audioSource.value.connect(audioContext.value.destination)
     audioSource.value.buffer = concatAudio(buffers.value)
-
     audioSource.value.start()
 }
 
