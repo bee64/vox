@@ -37,8 +37,8 @@ const concatAudio = (buffers: AudioBuffer[]): AudioBuffer => {
 
     let currentOffset = 0;
     buffers.forEach((buffer) => {
-        for (let channelNumber = 0; channelNumber < buffer.numberOfChannels; channelNumber++) {
-            combinedAudio.getChannelData(channelNumber).set(buffer.getChannelData(channelNumber), currentOffset);
+        for (let currChannel = 0; currChannel < buffer.numberOfChannels; currChannel++) {
+            combinedAudio.getChannelData(currChannel).set(buffer.getChannelData(currChannel), currentOffset);
         }
         currentOffset += buffer.length;
     });
