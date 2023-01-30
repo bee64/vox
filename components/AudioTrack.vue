@@ -1,11 +1,10 @@
 <template>
-    <section :key="`${trackNum}-${refreshKey}`" class="container">
+    <section :key="`refresh-${trackNum}-${refreshKey}`" class="container">
+        {{  autoRecord }}
         <button v-if="recorder?.state === 'recording'" @click="stop">stop</button>
         <button v-else @click="start">mic</button>
 
-        <div v-if="loadingPlayback">loading playback</div>
-        <div v-else-if="recorder?.state === 'recording'">recording</div>
-        <div>track line thingy</div>
+        <TrackVisualizer />
 
         <button @click="play">replay</button>
         <button @click="download">download</button>
@@ -13,7 +12,10 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({ trackNum: { type: Number, required: true }})
+const props = defineProps({
+    trackNum: { type: Number, required: true },
+    autoRecord: { type: Boolean, required: true },
+})
 // MediaRecorder is not deeply reactive, this key is used to force reactivity updates
 const refreshKey = ref(0)
 
@@ -55,7 +57,6 @@ const play = () => {
 }
 
 const start = async () => {
-    if (!micAccess.value) return // TODO: pop a modal?
     if (!recorder.value) await setupAudio() 
     recorder.value.start()
     refreshKey.value++
@@ -84,6 +85,8 @@ const processChunks = async (chunk: any) => {
 }
 
 const download = () => {}
+
+if (props.autoRecord) start()
 </script>
 
 <style scoped lang="scss">
