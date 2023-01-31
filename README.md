@@ -1,6 +1,6 @@
 # vox
 
-Record & download vocal snippets
+Record & download vocal snippets!
 
 ## Setup
 
