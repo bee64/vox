@@ -1,6 +1,7 @@
 <template>
     <div class="layout">
         <!-- TODO: Options? Optional lol -->
+        <!-- TODO: "Mic access" Modal -->
         <AudioTrack 
             v-for="count of trackCount"
             :key="`track-${count}`"
@@ -8,8 +9,9 @@
             :autoRecord="autoRecord"
         />
         <button @click="addNew">plus</button>
-        <!-- TODO: add new recorder, download, global controls -->
-        <!-- TODO: "Mic access" Modal -->
+        <!-- TODO -->
+        <!-- <button @click="downloadAll">dl all</button> -->
+        <!-- <button @click="deleteAll">delete all</button> -->
     </div>
 </template>
 

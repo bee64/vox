@@ -7,7 +7,9 @@
         <TrackVisualizer />
 
         <button @click="play">replay</button>
-        <button @click="download">download</button>
+        <!-- TODO -->
+        <!-- <button @click="download">download</button> -->
+        <!-- <button @click="delete">download</button> -->
     </section>
 </template>
 
