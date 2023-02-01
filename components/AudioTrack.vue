@@ -78,8 +78,7 @@ const loadingPlayback = ref(false)
 const processChunks = async (chunk: any) => {
     loadingPlayback.value = true
 
-    const options = { type: "audio/webm; codecs=opus" }
-    const blob = new Blob([chunk], options) // TODO: look into codecs
+    const blob = new Blob([chunk], { type: "audio/webm; codecs=opus" }) // TODO: look into codecs
     audioContext.value?.decodeAudioData(await blob.arrayBuffer(), (buffer: AudioBuffer) => {
         buffers.value.push(buffer)
         play() // TODO: make this configurable? so that "stop recording" is more like a pause
@@ -101,7 +100,6 @@ createHotkey(
     ['p', 'P'],
     play
 )
-
 
 // TODO
 // createHotkey(
