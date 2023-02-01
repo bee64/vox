@@ -1,10 +1,9 @@
 <template>
     <section :key="`refresh-${trackNum}-${refreshKey}`" class="container">
-        {{  autoRecord }}
         <button v-if="recorder?.state === 'recording'" @click="stop">stop</button>
         <button v-else @click="start">mic</button>
 
-        <TrackVisualizer />
+        <TrackVisualizer :active="isLastActive" />
 
         <button @click="play">replay</button>
         <!-- TODO -->
@@ -20,6 +19,12 @@ const props = defineProps({
 })
 // MediaRecorder is not deeply reactive, this key is used to force reactivity updates
 const refreshKey = ref(0)
+const { activeTrackNum } = useActiveTrack()
+const updateRefreshKey = () => {
+    activeTrackNum.value = props.trackNum
+    refreshKey.value++
+}
+const isLastActive = computed(() => activeTrackNum.value === props.trackNum)
 
 const { micAccess, getMic } = useMic()
 const recorder = ref()
@@ -61,23 +66,20 @@ const play = () => {
 const start = async () => {
     if (!recorder.value) await setupAudio() 
     recorder.value.start()
-    refreshKey.value++
+    updateRefreshKey()
 }
 
 const stop = () => {
-    if (!recorder.value || recorder.value.state === 'inactive') return
     recorder.value.stop()
-    refreshKey.value++
+    updateRefreshKey()
 }
 
 const loadingPlayback = ref(false)
-const chunks = ref<any[]>([])
 const processChunks = async (chunk: any) => {
     loadingPlayback.value = true
 
-    chunks.value.push(chunk)
     const options = { type: "audio/webm; codecs=opus" }
-    const blob = new Blob(chunks.value, options) // TODO: look into type
+    const blob = new Blob([chunk], options) // TODO: look into codecs
     audioContext.value?.decodeAudioData(await blob.arrayBuffer(), (buffer: AudioBuffer) => {
         buffers.value.push(buffer)
         play() // TODO: make this configurable? so that "stop recording" is more like a pause
@@ -88,13 +90,36 @@ const processChunks = async (chunk: any) => {
 
 const download = () => {}
 
-if (props.autoRecord) start()
+const { createHotkey } = useHotkeys(isLastActive)
+createHotkey(
+    "toggle record",
+    ['k', 'K', ' '],
+    () => recorder.value?.state === 'recording' ? stop() : start()
+)
+createHotkey(
+    "playback",
+    ['p', 'P'],
+    play
+)
+
+
+// TODO
+// createHotkey(
+//     "seek left",
+//     ['j', 'J', 'ArrowLeft'],
+//     () => {}
+// )
+// createHotkey(
+//     "seek right",
+//     ['l', 'L', 'ArrowRight'],
+//     () => {}
+// )
 </script>
 
 <style scoped lang="scss">
 .container {
     display: flex;
-    width: 100%;
     justify-content: space-between;
+    max-width: 750px;
 }
 </style>

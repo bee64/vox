@@ -26,6 +26,37 @@ const addNew = () => {
     autoRecord.value = true
     trackCount.value++
 }
+
+const { createHotkey } = useHotkeys()
+createHotkey(
+    "new track",
+    ['m', 'M', ',', '.', '/', '<', '>', '?'],
+    addNew
+)
+const { activeTrackNum } = useActiveTrack()
+createHotkey(
+    "down",
+    ['ArrowDown', 's', 'S'],
+    () => {
+        if (trackCount.value === 1) return
+        const next = (activeTrackNum.value + 1 > trackCount.value)
+            ? 1
+            : activeTrackNum.value + 1
+        activeTrackNum.value = next
+    }
+)
+createHotkey(
+    "up",
+    ['ArrowUp', 'w', 'W'],
+    () => {
+        if (trackCount.value === 1) return
+        const next = (activeTrackNum.value - 1 < 1)
+            ? trackCount.value
+            : activeTrackNum.value - 1
+        activeTrackNum.value = next
+    }
+)
+
 </script>
 
 <style scoped lang="scss">
